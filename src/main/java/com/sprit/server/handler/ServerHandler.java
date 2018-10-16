@@ -1,7 +1,7 @@
 package com.sprit.server.handler;
 
-import com.sprit.portocol.command.AbstractPacket;
-import com.sprit.portocol.command.PacketCodec;
+import com.sprit.portocol.AbstractPacket;
+import com.sprit.portocol.PacketCodec;
 import com.sprit.portocol.request.LoginRequestPacket;
 import com.sprit.portocol.response.LoginResponsePacket;
 import io.netty.buffer.ByteBuf;
@@ -39,7 +39,7 @@ public class ServerHandler extends ChannelInboundHandlerAdapter {
                 responsePacket.setReason("密码错误！");
             }
             //登录响应
-            ByteBuf respon = PacketCodec.INSTANCE.encode(ctx.alloc(), responsePacket);
+            ByteBuf respon = PacketCodec.INSTANCE.encode(ctx.alloc().buffer(), responsePacket);
             ctx.channel().writeAndFlush(respon);
         }
     }

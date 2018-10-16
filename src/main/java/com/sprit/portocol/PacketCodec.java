@@ -1,4 +1,4 @@
-package com.sprit.portocol.command;
+package com.sprit.portocol;
 
 import com.sprit.portocol.request.LoginRequestPacket;
 import com.sprit.portocol.response.LoginResponsePacket;
@@ -38,13 +38,11 @@ public class PacketCodec {
     }
 
 
-    public ByteBuf encode(ByteBufAllocator byteBufAllocator, AbstractPacket packet) {
-        // 1. 创建 ByteBuf 对象
-        ByteBuf byteBuf = byteBufAllocator.ioBuffer();
-        // 2. 序列化 java 对象
+    public ByteBuf encode(ByteBuf byteBuf, AbstractPacket packet) {
+        // 1. 序列化 java 对象
         byte[] bytes = Serializer.DEFAULT.serialize(packet);
 
-        // 3. 实际编码过程
+        // 2. 实际编码过程
         byteBuf.writeInt(MAGIC_NUMBER);
         byteBuf.writeByte(packet.getVersion());
         byteBuf.writeByte(Serializer.DEFAULT.getSerializerAlgorithm());

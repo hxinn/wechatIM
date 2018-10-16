@@ -1,10 +1,9 @@
 package com.sprit.client.handler;
 
-import com.sprit.portocol.command.AbstractPacket;
-import com.sprit.portocol.command.PacketCodec;
+import com.sprit.portocol.AbstractPacket;
+import com.sprit.portocol.PacketCodec;
 import com.sprit.portocol.request.LoginRequestPacket;
 import com.sprit.portocol.response.LoginResponsePacket;
-import com.sun.xml.internal.ws.api.message.Packet;
 import io.netty.buffer.ByteBuf;
 import io.netty.channel.ChannelHandlerContext;
 import io.netty.channel.ChannelInboundHandlerAdapter;

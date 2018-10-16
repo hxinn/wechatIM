@@ -41,6 +41,7 @@ public class NettyServer {
                     @Override
                     protected void initChannel(NioSocketChannel channel) throws Exception {
                         channel.pipeline().addLast(new ServerHandler());
+                        channel.pipeline().addLast();
                     }
                 });
         bind(serverBootstrap,7911);

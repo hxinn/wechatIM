@@ -1,4 +1,4 @@
-package com.sprit.portocol.command;
+package com.sprit.portocol;
 
 import com.alibaba.fastjson.annotation.JSONField;
 import lombok.Data;
