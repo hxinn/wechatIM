@@ -1,7 +1,9 @@
 package com.sprit.server;
 
-import com.sprit.server.handler.FirstServerHandler;
-import com.sprit.server.handler.ServerHandler;
+import com.sprit.codec.PacketDecoder;
+import com.sprit.codec.PacketEncoder;
+import com.sprit.server.handler.LoginRequestHandler;
+import com.sprit.server.handler.MessageRequestHandler;
 import io.netty.bootstrap.ServerBootstrap;
 import io.netty.channel.ChannelInitializer;
 import io.netty.channel.ChannelOption;
@@ -40,8 +42,10 @@ public class NettyServer {
                 .childHandler(new ChannelInitializer<NioSocketChannel>() {
                     @Override
                     protected void initChannel(NioSocketChannel channel) throws Exception {
-                        channel.pipeline().addLast(new ServerHandler());
-                        channel.pipeline().addLast();
+                        channel.pipeline().addLast(new PacketDecoder());
+                        channel.pipeline().addLast(new LoginRequestHandler());
+                        channel.pipeline().addLast(new MessageRequestHandler());
+                        channel.pipeline().addLast(new PacketEncoder());
                     }
                 });
         bind(serverBootstrap,7911);

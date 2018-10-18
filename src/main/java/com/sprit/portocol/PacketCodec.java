@@ -1,17 +1,17 @@
 package com.sprit.portocol;
 
 import com.sprit.portocol.request.LoginRequestPacket;
+import com.sprit.portocol.request.MessageRequestPacket;
 import com.sprit.portocol.response.LoginResponsePacket;
+import com.sprit.portocol.response.MessageResponsePacket;
 import com.sprit.serialize.Serializer;
 import com.sprit.serialize.impl.JSONSerializer;
 import io.netty.buffer.ByteBuf;
-import io.netty.buffer.ByteBufAllocator;
 
 import java.util.HashMap;
 import java.util.Map;
 
-import static com.sprit.portocol.command.Command.LOGIN_REQUEST;
-import static com.sprit.portocol.command.Command.LOGIN_RESPONSE;
+import static com.sprit.portocol.command.Command.*;
 
 /**
  * @author: xiaohuaxin
@@ -31,6 +31,8 @@ public class PacketCodec {
         packetTypeMap = new HashMap<>();
         packetTypeMap.put(LOGIN_REQUEST, LoginRequestPacket.class);
         packetTypeMap.put(LOGIN_RESPONSE, LoginResponsePacket.class);
+        packetTypeMap.put(MESSAGE_REQUEST, MessageRequestPacket.class);
+        packetTypeMap.put(MESSAGE_RESPONSE, MessageResponsePacket.class);
 
         serializerMap = new HashMap<>();
         Serializer serializer = new JSONSerializer();
@@ -66,7 +68,6 @@ public class PacketCodec {
 
         // 指令
         byte command = byteBuf.readByte();
-
         // 数据包长度
         int length = byteBuf.readInt();
 

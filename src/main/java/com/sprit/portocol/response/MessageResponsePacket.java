@@ -12,7 +12,7 @@ import static com.sprit.portocol.command.Command.MESSAGE_RESPONSE;
  * @return
  */
 @Data
-public class MessageResponePacket extends AbstractPacket {
+public class MessageResponsePacket extends AbstractPacket {
     private String message;
 
 

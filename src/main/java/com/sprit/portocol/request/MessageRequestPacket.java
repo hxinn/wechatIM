@@ -18,7 +18,7 @@ public class MessageRequestPacket extends AbstractPacket {
 
     private String message;
 
-    public MessageRequestPacket(String message) {
+        public MessageRequestPacket(String message) {
         this.message = message;
     }
 
