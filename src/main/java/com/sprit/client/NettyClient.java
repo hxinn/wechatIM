@@ -1,11 +1,17 @@
 package com.sprit.client;
 
+import com.sprit.client.handler.CreateGroupResponeHandler;
 import com.sprit.client.handler.LoginResponseHandler;
 import com.sprit.client.handler.MessageResponseHandler;
 import com.sprit.codec.PacketDecoder;
 import com.sprit.codec.PacketEncoder;
+import com.sprit.codec.Spliter;
+import com.sprit.console.ConsoleCommandMannager;
+import com.sprit.console.LoginConsoleCommand;
+import com.sprit.portocol.request.LoginRequestPacket;
 import com.sprit.portocol.request.MessageRequestPacket;
 import com.sprit.util.LoginUtil;
+import com.sprit.util.SessionUtil;
 import io.netty.bootstrap.Bootstrap;
 import io.netty.channel.Channel;
 import io.netty.channel.ChannelFuture;
@@ -40,9 +46,11 @@ public class NettyClient {
                 .handler(new ChannelInitializer<SocketChannel>() {
                     @Override
                     protected void initChannel(SocketChannel ch) throws Exception {
+                        ch.pipeline().addLast(new Spliter());
                         ch.pipeline().addLast(new PacketDecoder());
                         ch.pipeline().addLast(new LoginResponseHandler());
                         ch.pipeline().addLast(new MessageResponseHandler());
+                        ch.pipeline().addLast(new CreateGroupResponeHandler());
                         ch.pipeline().addLast(new PacketEncoder());
                     }
                 });
@@ -70,14 +78,16 @@ public class NettyClient {
     }
 
     private static void startConsoleThread(Channel channel) {
+        ConsoleCommandMannager consoleCommandMannager = new ConsoleCommandMannager();
+        LoginConsoleCommand loginConsoleCommand = new LoginConsoleCommand();
+        Scanner sc = new Scanner(System.in);
+
         new Thread(() -> {
             while (!Thread.interrupted()) {
-                if (LoginUtil.hasLogin(channel)) {
-                    System.out.println("输入消息发送至服务端: ");
-                    Scanner sc = new Scanner(System.in);
-                    String line = sc.nextLine();
-
-                    channel.writeAndFlush(new MessageRequestPacket(line));
+                if(!SessionUtil.hasLogin(channel)){
+                    loginConsoleCommand.exec(sc,channel);
+                }else {
+                    consoleCommandMannager.exec(sc,channel);
                 }
             }
         }).start();

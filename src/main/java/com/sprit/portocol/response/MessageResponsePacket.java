@@ -13,7 +13,10 @@ import static com.sprit.portocol.command.Command.MESSAGE_RESPONSE;
  */
 @Data
 public class MessageResponsePacket extends AbstractPacket {
+
+    private String fromUserId;
     private String message;
+    private String fromUserName;
 
 
     @Override

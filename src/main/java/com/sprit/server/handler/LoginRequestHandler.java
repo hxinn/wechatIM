@@ -2,8 +2,12 @@ package com.sprit.server.handler;
 
 import com.sprit.portocol.request.LoginRequestPacket;
 import com.sprit.portocol.response.LoginResponsePacket;
+import com.sprit.session.Session;
+import com.sprit.util.LoginUtil;
+import com.sprit.util.SessionUtil;
 import io.netty.channel.ChannelHandlerContext;
 import io.netty.channel.SimpleChannelInboundHandler;
+import java.util.UUID;
 
 /**
  * @author: xiaohuaxin
@@ -13,14 +17,20 @@ import io.netty.channel.SimpleChannelInboundHandler;
  */
 public class LoginRequestHandler extends SimpleChannelInboundHandler<LoginRequestPacket> {
 
+
     @Override
     protected void channelRead0(ChannelHandlerContext ctx, LoginRequestPacket msg) throws Exception {
-        System.out.println("服务端收到请求");
         LoginResponsePacket responsePacket = new LoginResponsePacket();
         responsePacket.setVersion(msg.getVersion());
+        responsePacket.setUserName(msg.getUserName());
         if(valid(msg)){
-            System.out.println("验证通过");
             responsePacket.setSuccess(true);
+            String userId = randomUserId();
+            responsePacket.setUserId(userId);
+            System.out.println("[" + msg.getUserName() + "]登录成功");
+            SessionUtil.bindSession(new Session(userId,msg.getUserName()),ctx.channel());
+
+            LoginUtil.markAsLogin(ctx.channel());
         }else {
             System.out.println("验证失败");
             responsePacket.setSuccess(false);
@@ -30,11 +40,25 @@ public class LoginRequestHandler extends SimpleChannelInboundHandler<LoginReques
     }
 
     private boolean valid(LoginRequestPacket loginRequestPacket){
-        if(loginRequestPacket!=null){
-            if("xiao".equals(loginRequestPacket.getUserName())&&"123456".equals(loginRequestPacket.getPassWord())){
-                return true;
-            }
-        }
-        return false;
+//        if(loginRequestPacket!=null){
+//            if("xiao".equals(loginRequestPacket.getUserName())&&"123456".equals(loginRequestPacket.getPassWord())){
+//                return true;
+//            }
+//        }
+        return true;
+    }
+
+
+    private static String randomUserId() {
+        return UUID.randomUUID().toString().split("-")[0];
+    }
+
+    /**
+     * 链接关闭取消绑定
+     * @param ctx
+     */
+    @Override
+    public void channelInactive(ChannelHandlerContext ctx) {
+        SessionUtil.unBindSession(ctx.channel());
     }
 }

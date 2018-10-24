@@ -3,23 +3,20 @@ package com.sprit.portocol.response;
 import com.sprit.portocol.AbstractPacket;
 import lombok.Data;
 
-import static com.sprit.portocol.command.Command.LOGIN_RESPONSE;
+import static com.sprit.portocol.command.Command.JOIN_GROUP_RESPONSE;
 
 
 @Data
-public class LoginResponsePacket extends AbstractPacket {
-    private String userId;
-
-    private String userName;
+public class JoinGroupResponsePacket extends AbstractPacket {
+    private String groupId;
 
     private boolean success;
 
     private String reason;
 
-
     @Override
     public Byte getCommand() {
 
-        return LOGIN_RESPONSE;
+        return JOIN_GROUP_RESPONSE;
     }
 }

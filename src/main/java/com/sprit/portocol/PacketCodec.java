@@ -1,7 +1,9 @@
 package com.sprit.portocol;
 
+import com.sprit.portocol.request.CreateGroupRequestPacket;
 import com.sprit.portocol.request.LoginRequestPacket;
 import com.sprit.portocol.request.MessageRequestPacket;
+import com.sprit.portocol.response.CreateGroupResponsePacket;
 import com.sprit.portocol.response.LoginResponsePacket;
 import com.sprit.portocol.response.MessageResponsePacket;
 import com.sprit.serialize.Serializer;
@@ -20,7 +22,7 @@ import static com.sprit.portocol.command.Command.*;
  * @return
  */
 public class PacketCodec {
-    private static final int MAGIC_NUMBER = 0x12345678;
+    public static final int MAGIC_NUMBER = 0x12345678;
     public static final PacketCodec INSTANCE = new PacketCodec();
 
     private final Map<Byte, Class<? extends AbstractPacket>> packetTypeMap;
@@ -33,6 +35,8 @@ public class PacketCodec {
         packetTypeMap.put(LOGIN_RESPONSE, LoginResponsePacket.class);
         packetTypeMap.put(MESSAGE_REQUEST, MessageRequestPacket.class);
         packetTypeMap.put(MESSAGE_RESPONSE, MessageResponsePacket.class);
+        packetTypeMap.put(CREATE_GROUP_REQUEST, CreateGroupRequestPacket.class);
+        packetTypeMap.put(CREATE_GROUP_RESPONSE, CreateGroupResponsePacket.class);
 
         serializerMap = new HashMap<>();
         Serializer serializer = new JSONSerializer();

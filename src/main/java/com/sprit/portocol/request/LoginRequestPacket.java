@@ -13,7 +13,6 @@ import static com.sprit.portocol.command.Command.LOGIN_REQUEST;
  */
 @Data
 public class LoginRequestPacket extends AbstractPacket {
-    private Integer uid;
     private String userName;
     private String passWord;
 

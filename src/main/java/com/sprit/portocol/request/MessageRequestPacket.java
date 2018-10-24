@@ -17,8 +17,10 @@ import static com.sprit.portocol.command.Command.MESSAGE_REQUEST;
 public class MessageRequestPacket extends AbstractPacket {
 
     private String message;
+    private String toUserId;
 
-        public MessageRequestPacket(String message) {
+    public MessageRequestPacket(String message,String toUserId) {
+        this.toUserId = toUserId;
         this.message = message;
     }
 
