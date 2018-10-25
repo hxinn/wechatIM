@@ -6,6 +6,7 @@ import com.sprit.session.Session;
 import com.sprit.util.IDUtil;
 import com.sprit.util.SessionUtil;
 import io.netty.channel.Channel;
+import io.netty.channel.ChannelHandler;
 import io.netty.channel.ChannelHandlerContext;
 import io.netty.channel.SimpleChannelInboundHandler;
 import io.netty.channel.group.ChannelGroup;
@@ -20,7 +21,12 @@ import java.util.List;
  * @Date: Created in 2018/10/24
  * @return
  */
+@ChannelHandler.Sharable
 public class CreateGroupRequestHandler extends SimpleChannelInboundHandler<CreateGroupRequestPacket> {
+    public static final CreateGroupRequestHandler INSTANCE = new CreateGroupRequestHandler();
+
+    public CreateGroupRequestHandler() {
+    }
 
     @Override
     protected void channelRead0(ChannelHandlerContext ctx, CreateGroupRequestPacket msg) throws Exception {
@@ -46,10 +52,13 @@ public class CreateGroupRequestHandler extends SimpleChannelInboundHandler<Creat
         createGroupResponsePacket.setGroupId(IDUtil.randomId());
         createGroupResponsePacket.setUserNameList(userNameList);
 
+        System.out.print("群创建成功，id 为[" + createGroupResponsePacket.getGroupId() + "], ");
+        System.out.println("群里面有：" + createGroupResponsePacket.getUserNameList());
+        SessionUtil.bindChannelGroup(createGroupResponsePacket.getGroupId(),channelGroup);
+
         //给每个客户端发送拉群聊通知
         channelGroup.writeAndFlush(createGroupResponsePacket);
 
-        System.out.print("群创建成功，id 为[" + createGroupResponsePacket.getGroupId() + "], ");
-        System.out.println("群里面有：" + createGroupResponsePacket.getUserNameList());
+
     }
 }

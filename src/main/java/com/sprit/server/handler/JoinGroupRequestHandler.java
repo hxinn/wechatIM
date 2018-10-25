@@ -3,6 +3,7 @@ package com.sprit.server.handler;
 import com.sprit.portocol.request.JoinGroupRequestPacket;
 import com.sprit.portocol.response.JoinGroupResponsePacket;
 import com.sprit.util.SessionUtil;
+import io.netty.channel.ChannelHandler;
 import io.netty.channel.ChannelHandlerContext;
 import io.netty.channel.SimpleChannelInboundHandler;
 import io.netty.channel.group.ChannelGroup;
@@ -13,13 +14,20 @@ import io.netty.channel.group.ChannelGroup;
  * @Date: Created in 2018/10/24
  * @return
  */
+@ChannelHandler.Sharable
 public class JoinGroupRequestHandler extends SimpleChannelInboundHandler<JoinGroupRequestPacket> {
+    public static final JoinGroupRequestHandler INSTANCE = new JoinGroupRequestHandler();
+
+    public JoinGroupRequestHandler() {
+    }
+
     @Override
     protected void channelRead0(ChannelHandlerContext ctx, JoinGroupRequestPacket msg) throws Exception {
         //获取对应的 channelGroup,然后将当期用户的 channel 添加进去
         String groupId = msg.getGroupId();
         ChannelGroup channelGroup = SessionUtil.getChannelGroup(groupId);
         JoinGroupResponsePacket responsePacket = new JoinGroupResponsePacket();
+        System.out.println("要加入的群聊"+channelGroup);
         if(channelGroup !=  null){
             channelGroup.add(ctx.channel());
             //构造加群响应发送给客户端

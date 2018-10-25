@@ -5,6 +5,7 @@ import com.sprit.portocol.response.LoginResponsePacket;
 import com.sprit.session.Session;
 import com.sprit.util.LoginUtil;
 import com.sprit.util.SessionUtil;
+import io.netty.channel.ChannelHandler;
 import io.netty.channel.ChannelHandlerContext;
 import io.netty.channel.SimpleChannelInboundHandler;
 import java.util.UUID;
@@ -15,8 +16,12 @@ import java.util.UUID;
  * @Date: Created in 2018/10/16
  * @return
  */
+@ChannelHandler.Sharable
 public class LoginRequestHandler extends SimpleChannelInboundHandler<LoginRequestPacket> {
+    public static final LoginRequestHandler INSTANCE = new LoginRequestHandler();
 
+    public LoginRequestHandler() {
+    }
 
     @Override
     protected void channelRead0(ChannelHandlerContext ctx, LoginRequestPacket msg) throws Exception {

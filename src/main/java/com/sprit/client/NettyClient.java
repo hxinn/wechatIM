@@ -1,8 +1,6 @@
 package com.sprit.client;
 
-import com.sprit.client.handler.CreateGroupResponeHandler;
-import com.sprit.client.handler.LoginResponseHandler;
-import com.sprit.client.handler.MessageResponseHandler;
+import com.sprit.client.handler.*;
 import com.sprit.codec.PacketDecoder;
 import com.sprit.codec.PacketEncoder;
 import com.sprit.codec.Spliter;
@@ -10,6 +8,7 @@ import com.sprit.console.ConsoleCommandMannager;
 import com.sprit.console.LoginConsoleCommand;
 import com.sprit.portocol.request.LoginRequestPacket;
 import com.sprit.portocol.request.MessageRequestPacket;
+import com.sprit.server.handler.IMIdleStateHandler;
 import com.sprit.util.LoginUtil;
 import com.sprit.util.SessionUtil;
 import io.netty.bootstrap.Bootstrap;
@@ -46,12 +45,19 @@ public class NettyClient {
                 .handler(new ChannelInitializer<SocketChannel>() {
                     @Override
                     protected void initChannel(SocketChannel ch) throws Exception {
+                        ch.pipeline().addLast(new IMIdleStateHandler());
                         ch.pipeline().addLast(new Spliter());
                         ch.pipeline().addLast(new PacketDecoder());
                         ch.pipeline().addLast(new LoginResponseHandler());
+                        ch.pipeline().addLast(new LogoutResponseHandler());
                         ch.pipeline().addLast(new MessageResponseHandler());
                         ch.pipeline().addLast(new CreateGroupResponeHandler());
+                        ch.pipeline().addLast(new JoinGroupResponseHandler());
+                        ch.pipeline().addLast(new QuitGroupResponseHandler());
+                        ch.pipeline().addLast(new ListGroupMembersResponseHandler());
+                        ch.pipeline().addLast(new GroupMessageResponseHandler());
                         ch.pipeline().addLast(new PacketEncoder());
+                        ch.pipeline().addLast(new HeartBeatTimerHandler());
                     }
                 });
         connect(bootstrap,"192.168.2.204",7911,MAX_RETRY);

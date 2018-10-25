@@ -1,6 +1,7 @@
 package com.sprit.server.handler;
 
 import com.sprit.util.LoginUtil;
+import io.netty.channel.ChannelHandler;
 import io.netty.channel.ChannelHandlerContext;
 import io.netty.channel.ChannelInboundHandlerAdapter;
 
@@ -10,8 +11,13 @@ import io.netty.channel.ChannelInboundHandlerAdapter;
  * @Date: Created in 2018/10/19
  * @return
  */
+@ChannelHandler.Sharable
 public class AuthHandler extends ChannelInboundHandlerAdapter {
 
+    public static final AuthHandler INSTANCE = new AuthHandler();
+
+    public AuthHandler() {
+    }
 
     @Override
     public void channelRead(ChannelHandlerContext ctx, Object msg) throws Exception {

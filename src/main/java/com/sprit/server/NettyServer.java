@@ -1,12 +1,7 @@
 package com.sprit.server;
 
-import com.sprit.codec.PacketDecoder;
-import com.sprit.codec.PacketEncoder;
 import com.sprit.codec.Spliter;
-import com.sprit.server.handler.AuthHandler;
-import com.sprit.server.handler.CreateGroupRequestHandler;
-import com.sprit.server.handler.LoginRequestHandler;
-import com.sprit.server.handler.MessageRequestHandler;
+import com.sprit.server.handler.*;
 import io.netty.bootstrap.ServerBootstrap;
 import io.netty.channel.ChannelInitializer;
 import io.netty.channel.ChannelOption;
@@ -45,13 +40,15 @@ public class NettyServer {
                 .childHandler(new ChannelInitializer<NioSocketChannel>() {
                     @Override
                     protected void initChannel(NioSocketChannel channel) throws Exception {
+                        channel.pipeline().addLast(new IMIdleStateHandler());
                         channel.pipeline().addLast(new Spliter());
-                        channel.pipeline().addLast(new PacketDecoder());
-                        channel.pipeline().addLast(new LoginRequestHandler());
-                        channel.pipeline().addLast(new AuthHandler());
-                        channel.pipeline().addLast(new MessageRequestHandler());
-                        channel.pipeline().addLast(new CreateGroupRequestHandler());
-                        channel.pipeline().addLast(new PacketEncoder());
+                        channel.pipeline().addLast(PacketCodecHandler.INSTANCE);
+                        channel.pipeline().addLast(LoginRequestHandler.INSTANCE);
+                        channel.pipeline().addLast(HeartBeatRequestHandler.INSTANCE);
+                        channel.pipeline().addLast(AuthHandler.INSTANCE);
+                        channel.pipeline().addLast(IMhandler.INSTANCE);
+
+
                     }
                 });
         bind(serverBootstrap,7911);
